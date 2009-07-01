@@ -2469,16 +2469,16 @@ ClientConnection::SubProcessPointerEvent(int x, int y, DWORD keyflags)
 inline void
 ClientConnection::SendPointerEvent(int x, int y, int buttonMask)
 {
-    rfbPointerEventMsg pe;
+ //   rfbPointerEventMsg pe;
 
-    pe.type = rfbPointerEvent;
-    pe.buttonMask = buttonMask;
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
-	SoftCursorMove(x, y);
-    pe.x = Swap16IfLE(x);
-    pe.y = Swap16IfLE(y);
-	WriteExact((char *)&pe, sz_rfbPointerEventMsg);
+ //   pe.type = rfbPointerEvent;
+ //   pe.buttonMask = buttonMask;
+ //   if (x < 0) x = 0;
+ //   if (y < 0) y = 0;
+	//SoftCursorMove(x, y);
+ //   pe.x = Swap16IfLE(x);
+ //   pe.y = Swap16IfLE(y);
+	//WriteExact((char *)&pe, sz_rfbPointerEventMsg);
 }
 
 //
