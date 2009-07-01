@@ -1554,7 +1554,7 @@ void ClientConnection::CreateLocalFramebuffer() {
 		rect.right = m_si.framebufferWidth / 2;
 		rect.bottom = m_si.framebufferHeight / 2;
 	
-		DrawText (m_hBitmapDC, _T("Please wait - initial screen loading"), -1, &rect,
+		DrawText (m_hBitmapDC, _T("Connected. Any keyboard activity in this window will be sent to the server."), -1, &rect,
 				  DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 		SetBkColor(m_hBitmapDC, oldbgcol);
 		SetTextColor(m_hBitmapDC, oldtxtcol);
