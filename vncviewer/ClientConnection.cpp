@@ -2863,6 +2863,7 @@ ClientConnection::SendFramebufferUpdateRequest(int x, int y, int w, int h, bool 
 
 inline void ClientConnection::SendIncrementalFramebufferUpdateRequest()
 {
+	return;
     SendFramebufferUpdateRequest(0, 0, m_si.framebufferWidth,
 					m_si.framebufferHeight, true);
 }
