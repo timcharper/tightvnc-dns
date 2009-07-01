@@ -43,6 +43,8 @@
 #include "ConnectingDialog.h"
 #include "FileTransfer.h"
 #include "zlib/zlib.h"
+#include <time.h>
+
 extern "C" {
 #include "libjpeg/jpeglib.h"
 }
@@ -276,6 +278,9 @@ private:
 		m_bitmapdcMutex,  m_clipMutex,
 		m_readMutex, m_writeMutex, m_sockMutex,
 		m_cursorMutex;
+
+	int m_keys_this_second;
+	time_t m_last_second;
 
 	// Buffer for zlib decompression.
 	void CheckZlibBufferSize(size_t bufsize);

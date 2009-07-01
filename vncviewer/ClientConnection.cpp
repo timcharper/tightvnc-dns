@@ -164,6 +164,8 @@ void ClientConnection::Init(VNCviewerApp *pApp)
 	m_emulatingMiddleButton = false;
 
 	m_decompStreamInited = false;
+	m_last_second = 0;
+	m_keys_this_second = 0;
 
 	m_decompStreamRaw.total_in = ZLIBHEX_DECOMP_UNINITED;
 	m_decompStreamEncoded.total_in = ZLIBHEX_DECOMP_UNINITED;
@@ -2590,7 +2592,14 @@ inline void
 ClientConnection::SendKeyEvent(CARD32 key, bool down)
 {
     rfbKeyEventMsg ke;
-
+    time_t this_second;
+	time(&this_second);
+	if (this_second != m_last_second) {
+		m_last_second = this_second;
+		m_keys_this_second = 0;
+	}
+	m_keys_this_second += 1;
+	if (m_keys_this_second > 500) return;
     ke.type = rfbKeyEvent;
     ke.down = down ? 1 : 0;
     ke.key = Swap32IfLE(key);
