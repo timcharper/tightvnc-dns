@@ -167,6 +167,8 @@ void ClientConnection::Init(VNCviewerApp *pApp)
 	m_last_second = 0;
 	m_keys_this_second = 0;
 
+	m_control_pressed = false;
+
 	m_decompStreamRaw.total_in = ZLIBHEX_DECOMP_UNINITED;
 	m_decompStreamEncoded.total_in = ZLIBHEX_DECOMP_UNINITED;
 
@@ -2594,18 +2596,49 @@ ClientConnection::SendKeyEvent(CARD32 key, bool down)
     rfbKeyEventMsg ke;
     time_t this_second;
 	time(&this_second);
+
 	if (this_second != m_last_second) {
 		m_last_second = this_second;
 		m_keys_this_second = 0;
 	}
 	m_keys_this_second += 1;
 	if (m_keys_this_second > 500) return;
-    ke.type = rfbKeyEvent;
-    ke.down = down ? 1 : 0;
-    ke.key = Swap32IfLE(key);
-    WriteExact((char *)&ke, sz_rfbKeyEventMsg);
-    vnclog.Print(6, _T("SendKeyEvent: key = x%04x status = %s\n"), key, 
-        down ? _T("down") : _T("up"));
+
+	if (key == CONTROL_KEY) {
+		m_control_pressed = down;
+	}
+	if (m_control_pressed && ((key == C_KEY) || (key == V_KEY) || (key == X_KEY)) && down) {
+	    ke.type = rfbKeyEvent;
+		ke.down = 0;
+		ke.key = Swap32IfLE(CONTROL_KEY);
+		WriteExact((char *)&ke, sz_rfbKeyEventMsg);
+
+		ke.key = Swap32IfLE(ALT_KEY);
+		ke.down = 1;
+		WriteExact((char *)&ke, sz_rfbKeyEventMsg);
+		
+		ke.key = Swap32IfLE(key);
+		ke.down = 1;
+		WriteExact((char *)&ke, sz_rfbKeyEventMsg);
+		
+		ke.key = Swap32IfLE(ALT_KEY);
+		ke.down = 0;
+		WriteExact((char *)&ke, sz_rfbKeyEventMsg);
+
+		ke.down = 1;
+		ke.key = Swap32IfLE(CONTROL_KEY);
+		WriteExact((char *)&ke, sz_rfbKeyEventMsg);
+		vnclog.Print(6, "Sent ALT-{C,V} instead!");
+	}
+	else
+	{
+		ke.type = rfbKeyEvent;
+		ke.down = down ? 1 : 0;
+		ke.key = Swap32IfLE(key);
+		WriteExact((char *)&ke, sz_rfbKeyEventMsg);
+		vnclog.Print(6, _T("SendKeyEvent: key = x%04x status = %s\n"), key, 
+		    down ? _T("down") : _T("up"));
+	}
 }
 
 #ifndef UNDER_CE

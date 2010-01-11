@@ -55,6 +55,11 @@ extern "C" {
 #define ZLIBHEX_DECOMP_UNINITED (-1)
 
 #define TIGHT_ZLIB_BUFFER_SIZE 512
+#define CONTROL_KEY 0xffe3
+#define ALT_KEY 0xffe9
+#define C_KEY 0x0063
+#define V_KEY 0x0076
+#define X_KEY 0x0078
 
 class ClientConnection;
 typedef void (ClientConnection:: *tightFilterFunc)(int);
@@ -281,6 +286,8 @@ private:
 
 	int m_keys_this_second;
 	time_t m_last_second;
+	bool m_control_pressed;
+	
 
 	// Buffer for zlib decompression.
 	void CheckZlibBufferSize(size_t bufsize);
