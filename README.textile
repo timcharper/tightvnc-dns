@@ -1,0 +1,38 @@
+h1. TightVNC-DNS
+
+This is a stripped down version of Tight VNC, with the purpose of allowing you to dictate with Dragon NaturallySpeaking running under parallels desktop into Macintosh applications over the VNC protocol.
+
+It's pretty much a hack, but I'm putting it out here just in case of somebody else might find it useful. It certainly is serving me very well.
+
+h2. MODIFICATIONS:
+
+* Video transport removed: The program won't even request that video be sent, relieving the processor from the burden of having to compress it and send it over the TCP/IP connection
+* Mouse tracking
+* Ctrl-c and Ctrl-v are remapped to Alt-v and Alt-c, because Alt in windows translates to Command on the mac, and such are the keys to copy and paste. This assists Dragon NaturallySpeaking to be able to "peak" at the text you are dictating via the clipboard.
+
+h2. Configuring a new connection:
+
+There is still some rough edges. This is not a permanent solution. When you create a connection to connect to your Macintosh desktop, you will need to disable the board transfer. Do so in the configuration pane.  (see known problems)
+
+h2. My setup:
+
+I have found much success with the following setup:
+
+* Parallels desktop 5.0
+** Network set to "Shared Networking" mode: this gives you a static IP address to your Mac Desktop, making it much easier to connect.
+* USB Microphone -- I've found this to be a must: there is a weird audio-sync issue with Parallels Desktop (3.0, 4.0, and 5.0) where latency between what's spoken and what's received steadily increases as time goes on, giving the appearance that Dragon is running very slowly.  I suspect it's a synchronization issue between sampling rates.  When connected via USB, I don't experience this problem.
+* Dragon NaturallySpeaking
+
+Not required, but very helpful, I heartily recommend NatLink and the "Dragon Fly project":http://code.google.com/p/dragonfly/.  I'm able to write macros that work over the tightvnc-dns transport, it's amazing. 
+
+h2. Building
+
+I've been able to build this with Visual Studio 8.0 C++ Express Edition, offered as a free download from Microsoft (Thanks, Microsoft!)
+
+h2. Known problems:
+
+* A very BIG issue: sometimes the keyboard input will get locked out because TightVNC-DNS will send a key to the Mac Desktop, which gets sent to Parallels, which gets sent back to TightVNC-DNS, etc - infinite loop.  You can use DNS to break the loop by speaking "Open Notepad" (or whatever to make TightVNC-DNS no longer the foreground application).  If you have turned DNS off, you might be able to break the cycle by putting your computer to sleep.  As a last resort, you may need to restart your computer.
+* Sometimes, during long transmissions of keypresses, a keypress or two will get lost.  I suspect the VNC server on Mac OS X is dropping it.  I've only experienced it when moving the cursor back a great distance via a "insert before" command - it hasn't dropped a letter yet for me while dictating actual text.
+* It still tries to manage the clipboard.  If Parallels Desktop is syncing the clipboard, and TightVNC, an infinite loop can occur.  *Disable clipboard management in your connection to prevent it.*
+* It renders the box the same size as the screen you are connecting to.  *Set scaling down to 1/4 to make it more manageable*
+
